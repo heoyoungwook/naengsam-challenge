@@ -229,6 +229,21 @@
   }
   .runner-card:hover { border-color: var(--border); }
   .runner-card.done { border-color: rgba(34,197,94,0.3); }
+  .runner-card.hard { border-color: rgba(255,92,0,0.25); background: linear-gradient(135deg, var(--surface) 0%, rgba(255,92,0,0.05) 100%); }
+
+  .hard-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 100px;
+    background: rgba(255,92,0,0.15);
+    color: var(--accent);
+    letter-spacing: 0.5px;
+  }
+
+  .progress-fill.hard {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
 
   .runner-header {
     display: flex;
@@ -422,18 +437,18 @@
         <label>이름</label>
         <select id="name">
           <option value="">선택해주세요</option>
-          <option>이혜경</option>
-          <option>김홍태</option>
-          <option>이주형</option>
-          <option>허영욱</option>
-          <option>인혜란</option>
-          <option>오상직</option>
-          <option>지용진</option>
-          <option>이현수</option>
-          <option>박태현</option>
-          <option>홍지원</option>
           <option>권채은</option>
+          <option>김홍태</option>
+          <option>박태현</option>
           <option>안예지</option>
+          <option>오상직</option>
+          <option>인혜란</option>
+          <option>이주형</option>
+          <option>이현수</option>
+          <option>이혜경</option>
+          <option>지용진</option>
+          <option>홍지원</option>
+          <option>허영욱</option>
         </select>
       </div>
 
@@ -488,18 +503,18 @@
       <div class="section-title" style="margin-bottom:0">인증 기록</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;" id="filterBtns">
         <button class="filter-btn active" onclick="filterLog('전체', this)">전체</button>
-        <button class="filter-btn" onclick="filterLog('이혜경', this)">이혜경</button>
-        <button class="filter-btn" onclick="filterLog('김홍태', this)">김홍태</button>
-        <button class="filter-btn" onclick="filterLog('이주형', this)">이주형</button>
-        <button class="filter-btn" onclick="filterLog('허영욱', this)">허영욱</button>
-        <button class="filter-btn" onclick="filterLog('인혜란', this)">인혜란</button>
-        <button class="filter-btn" onclick="filterLog('오상직', this)">오상직</button>
-        <button class="filter-btn" onclick="filterLog('지용진', this)">지용진</button>
-        <button class="filter-btn" onclick="filterLog('이현수', this)">이현수</button>
-        <button class="filter-btn" onclick="filterLog('박태현', this)">박태현</button>
-        <button class="filter-btn" onclick="filterLog('홍지원', this)">홍지원</button>
         <button class="filter-btn" onclick="filterLog('권채은', this)">권채은</button>
+        <button class="filter-btn" onclick="filterLog('김홍태', this)">김홍태</button>
+        <button class="filter-btn" onclick="filterLog('박태현', this)">박태현</button>
         <button class="filter-btn" onclick="filterLog('안예지', this)">안예지</button>
+        <button class="filter-btn" onclick="filterLog('오상직', this)">오상직</button>
+        <button class="filter-btn" onclick="filterLog('인혜란', this)">인혜란</button>
+        <button class="filter-btn" onclick="filterLog('이주형', this)">이주형</button>
+        <button class="filter-btn" onclick="filterLog('이현수', this)">이현수</button>
+        <button class="filter-btn" onclick="filterLog('이혜경', this)">이혜경</button>
+        <button class="filter-btn" onclick="filterLog('지용진', this)">지용진</button>
+        <button class="filter-btn" onclick="filterLog('홍지원', this)">홍지원</button>
+        <button class="filter-btn" onclick="filterLog('허영욱', this)">허영욱</button>
       </div>
     </div>
     <div class="log-table">
@@ -660,11 +675,7 @@ async function loadDashboard() {
   const grid = document.getElementById('runnersGrid');
   grid.innerHTML = '';
 
-  const sorted = Object.keys(GOALS).sort((a, b) => {
-    const pa = (byName[a]?.total || 0) / GOALS[a];
-    const pb = (byName[b]?.total || 0) / GOALS[b];
-    return pb - pa;
-  });
+  const sorted = Object.keys(GOALS).sort((a, b) => a.localeCompare(b, 'ko'));
 
   for (const name of sorted) {
     const goal = GOALS[name];
@@ -673,17 +684,21 @@ async function loadDashboard() {
     const pct = Math.min(total / goal * 100, 100);
     const done = total >= goal;
     const close = !done && pct >= 80;
+    const isHard = goal >= 35;
 
     grid.innerHTML += `
-      <div class="runner-card ${done ? 'done' : ''}">
+      <div class="runner-card ${done ? 'done' : ''} ${isHard && !done ? 'hard' : ''}">
         <div class="runner-header">
-          <div class="runner-name">${name}</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="runner-name">${name}</div>
+            ${isHard ? '<span class="hard-badge">35km</span>' : ''}
+          </div>
           <div class="runner-badge ${done ? 'done' : close ? 'close' : ''}">
-            ${done ? '✅ 달성' : close ? '🔥 임박' : `목표 ${goal}km`}
+            ${done ? '✅ 달성' : close ? '🔥 임박' : '목표 ' + goal + 'km'}
           </div>
         </div>
-        <div class="progress-bar">
-          <div class="progress-fill ${done ? 'done' : close ? 'close' : ''}" style="width:${pct}%"></div>
+        <div class="progress-bar" style="${isHard && !done ? 'height:8px;' : ''}">
+          <div class="progress-fill ${done ? 'done' : close ? 'close' : isHard ? 'hard' : ''}" style="width:${pct}%"></div>
         </div>
         <div class="runner-stats">
           <span><span class="runner-km">${total.toFixed(1)}km</span> / ${goal}km</span>
