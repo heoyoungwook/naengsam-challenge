@@ -563,7 +563,8 @@ async function submitRun() {
   try {
     // 사진 업로드
     const ext = file.name.split('.').pop();
-    const fileName = `${name}_${Date.now()}.${ext}`;
+    const safeName = Date.now() + "_" + Math.random().toString(36).substring(2, 8);
+    const fileName = `run_${safeName}.${ext}`;
     const { error: uploadError } = await sb.storage.from('photos').upload(fileName, file);
     if (uploadError) throw uploadError;
 
