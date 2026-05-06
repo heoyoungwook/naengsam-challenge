@@ -230,6 +230,9 @@
   .runner-card:hover { border-color: var(--border); }
   .runner-card.done { border-color: rgba(34,197,94,0.3); }
   .runner-card.hard { border-color: rgba(255,92,0,0.25); background: linear-gradient(135deg, var(--surface) 0%, rgba(255,92,0,0.05) 100%); }
+  .runner-card.over { border-color: rgba(255,184,0,0.5); background: linear-gradient(135deg, var(--surface) 0%, rgba(255,184,0,0.07) 100%); }
+  .runner-badge.over { background: rgba(255,184,0,0.15); color: var(--accent2); }
+  .progress-fill.over { background: linear-gradient(90deg, #ffb800, #ffe066); box-shadow: 0 0 8px rgba(255,184,0,0.5); }
 
   .hard-badge {
     font-size: 10px;
@@ -681,28 +684,30 @@ async function loadDashboard() {
     const goal = GOALS[name];
     const total = byName[name]?.total || 0;
     const runs = byName[name]?.runs || 0;
-    const pct = Math.min(total / goal * 100, 100);
+    const rawPct = total / goal * 100;
+    const pct = Math.min(rawPct, 100);
     const done = total >= goal;
+    const over = total > goal;
     const close = !done && pct >= 80;
     const isHard = goal >= 35;
 
     grid.innerHTML += `
-      <div class="runner-card ${done ? 'done' : ''} ${isHard && !done ? 'hard' : ''}">
+      <div class="runner-card ${over ? 'over' : done ? 'done' : ''} ${isHard && !done ? 'hard' : ''}">
         <div class="runner-header">
           <div style="display:flex;align-items:center;gap:8px;">
             <div class="runner-name">${name}</div>
             ${isHard ? '<span class="hard-badge">35km</span>' : ''}
           </div>
-          <div class="runner-badge ${done ? 'done' : close ? 'close' : ''}">
-            ${done ? '✅ 달성' : close ? '🔥 임박' : '목표 ' + goal + 'km'}
+          <div class="runner-badge ${over ? 'over' : done ? 'done' : close ? 'close' : ''}">
+            ${over ? '🏆 초과달성' : done ? '✅ 달성' : close ? '🔥 임박' : '목표 ' + goal + 'km'}
           </div>
         </div>
         <div class="progress-bar" style="${isHard && !done ? 'height:8px;' : ''}">
-          <div class="progress-fill ${done ? 'done' : close ? 'close' : isHard ? 'hard' : ''}" style="width:${pct}%"></div>
+          <div class="progress-fill ${over ? 'over' : done ? 'done' : close ? 'close' : isHard ? 'hard' : ''}" style="width:${pct}%"></div>
         </div>
         <div class="runner-stats">
           <span><span class="runner-km">${total.toFixed(1)}km</span> / ${goal}km</span>
-          <span>${runs}회 인증 · ${pct.toFixed(0)}%</span>
+          <span>${runs}회 인증 · ${rawPct.toFixed(0)}%</span>
         </div>
       </div>`;
   }
