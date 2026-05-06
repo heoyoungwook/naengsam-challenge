@@ -354,6 +354,20 @@
     justify-content: center;
   }
 
+  .filter-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { color: var(--text); border-color: var(--muted); }
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+
   .loading {
     text-align: center;
     padding: 60px;
@@ -450,13 +464,15 @@
         <div class="stat-label">총 달린 거리</div>
         <div class="stat-value" id="totalKm">-<span class="stat-unit">km</span></div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">달성 인원</div>
-        <div class="stat-value" id="doneCount">-<span class="stat-unit">명</span></div>
+      <div class="stat-card" style="border-color: rgba(255,184,0,0.3);">
+        <div class="stat-label">🥇 가장 많이 달린</div>
+        <div id="topKmName" style="font-size:20px;font-weight:700;margin-top:4px;">-</div>
+        <div id="topKmVal" style="font-size:13px;color:var(--muted);margin-top:2px;">-</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">총 인증 횟수</div>
-        <div class="stat-value" id="totalRuns">-<span class="stat-unit">회</span></div>
+      <div class="stat-card" style="border-color: rgba(255,92,0,0.3);">
+        <div class="stat-label">🔥 진척률 1위</div>
+        <div id="topPctName" style="font-size:20px;font-weight:700;margin-top:4px;">-</div>
+        <div id="topPctVal" style="font-size:13px;color:var(--muted);margin-top:2px;">-</div>
       </div>
     </div>
 
@@ -468,7 +484,24 @@
 
   <!-- 인증 로그 탭 -->
   <div class="panel" id="panel-log">
-    <div class="section-title">전체 인증 기록</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+      <div class="section-title" style="margin-bottom:0">인증 기록</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;" id="filterBtns">
+        <button class="filter-btn active" onclick="filterLog('전체', this)">전체</button>
+        <button class="filter-btn" onclick="filterLog('이혜경', this)">이혜경</button>
+        <button class="filter-btn" onclick="filterLog('김홍태', this)">김홍태</button>
+        <button class="filter-btn" onclick="filterLog('이주형', this)">이주형</button>
+        <button class="filter-btn" onclick="filterLog('허영욱', this)">허영욱</button>
+        <button class="filter-btn" onclick="filterLog('인혜란', this)">인혜란</button>
+        <button class="filter-btn" onclick="filterLog('오상직', this)">오상직</button>
+        <button class="filter-btn" onclick="filterLog('지용진', this)">지용진</button>
+        <button class="filter-btn" onclick="filterLog('이현수', this)">이현수</button>
+        <button class="filter-btn" onclick="filterLog('박태현', this)">박태현</button>
+        <button class="filter-btn" onclick="filterLog('홍지원', this)">홍지원</button>
+        <button class="filter-btn" onclick="filterLog('권채은', this)">권채은</button>
+        <button class="filter-btn" onclick="filterLog('안예지', this)">안예지</button>
+      </div>
+    </div>
     <div class="log-table">
       <div class="log-row header">
         <div>#</div>
@@ -604,10 +637,24 @@ async function loadDashboard() {
 
   // 전체 통계
   const totalKm = data.reduce((s, r) => s + r.distance, 0);
-  const doneCount = Object.entries(byName).filter(([n, v]) => v.total >= (GOALS[n] || 35)).length;
   document.getElementById('totalKm').innerHTML = totalKm.toFixed(1) + '<span class="stat-unit">km</span>';
-  document.getElementById('doneCount').innerHTML = doneCount + '<span class="stat-unit">명</span>';
-  document.getElementById('totalRuns').innerHTML = data.length + '<span class="stat-unit">회</span>';
+
+  // 가장 많이 달린 사람
+  const topKm = Object.entries(byName).sort((a, b) => b[1].total - a[1].total)[0];
+  if (topKm) {
+    document.getElementById('topKmName').textContent = topKm[0];
+    document.getElementById('topKmVal').textContent = topKm[1].total.toFixed(1) + 'km · ' + topKm[1].runs + '회 인증';
+  }
+
+  // 진척률 1위
+  const topPct = Object.entries(byName).sort((a, b) => {
+    return (b[1].total / (GOALS[b[0]] || 35)) - (a[1].total / (GOALS[a[0]] || 35));
+  })[0];
+  if (topPct) {
+    const pct = (topPct[1].total / (GOALS[topPct[0]] || 35) * 100).toFixed(0);
+    document.getElementById('topPctName').textContent = topPct[0];
+    document.getElementById('topPctVal').textContent = pct + '% 달성 (' + topPct[1].total.toFixed(1) + 'km)';
+  }
 
   // 참가자 카드
   const grid = document.getElementById('runnersGrid');
@@ -647,6 +694,9 @@ async function loadDashboard() {
 }
 
 // 인증 로그 로드
+let allRunData = [];
+let runOrderMap = {};
+
 async function loadLog() {
   const { data, error } = await sb.from('runs').select('*').order('submitted_at', { ascending: false });
   if (error) return;
@@ -654,24 +704,34 @@ async function loadLog() {
   // 회차 계산 (사람별 순서)
   const countByName = {};
   const reversed = [...data].reverse();
-  const runOrder = {};
   for (const r of reversed) {
     countByName[r.name] = (countByName[r.name] || 0) + 1;
-    runOrder[r.id] = countByName[r.name];
+    runOrderMap[r.id] = countByName[r.name];
   }
 
+  allRunData = data;
+  renderLog(data);
+}
+
+function filterLog(name, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const filtered = name === '전체' ? allRunData : allRunData.filter(r => r.name === name);
+  renderLog(filtered);
+}
+
+function renderLog(data) {
   const body = document.getElementById('logBody');
   if (!data.length) {
-    body.innerHTML = '<div class="loading">아직 인증 기록이 없어요</div>';
+    body.innerHTML = '<div class="loading">인증 기록이 없어요</div>';
     return;
   }
-
   body.innerHTML = data.map((r, i) => `
     <div class="log-row">
       <div class="rank">${i + 1}</div>
       <div>${r.name}</div>
       <div style="font-weight:700">${r.distance.toFixed(1)}km</div>
-      <div style="color:var(--muted)">${runOrder[r.id]}회차</div>
+      <div style="color:var(--muted)">${runOrderMap[r.id] || '-'}회차</div>
       <div class="log-date">${new Date(r.submitted_at).toLocaleDateString('ko-KR', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
       <div>${r.photo_url ? `<button class="view-photo" onclick="openModal('${r.photo_url}')">보기</button>` : '-'}</div>
     </div>`).join('');
