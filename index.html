@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏃 냉삼런 챌린지</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --accent: #ff5c00;
+    --accent2: #ffb800;
+    --text: #f0f0f0;
+    --muted: #666;
+    --success: #22c55e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--accent);
+  }
+
+  .logo span { color: var(--text); }
+
+  nav { display: flex; gap: 4px; }
+  nav button {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  nav button:hover { color: var(--text); background: var(--surface2); }
+  nav button.active { color: var(--accent); background: rgba(255,92,0,0.1); }
+
+  main { max-width: 960px; margin: 0 auto; padding: 40px 24px; }
+
+  /* 탭 패널 */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* 인증 폼 */
+  .form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .form-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .form-sub { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
+
+  .field { margin-bottom: 20px; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .field select,
+  .field input[type="number"],
+  .field input[type="text"] {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.15s;
+    appearance: none;
+  }
+
+  .field select:focus,
+  .field input:focus { border-color: var(--accent); }
+
+  .field select option { background: var(--surface2); }
+
+  /* 사진 업로드 영역 */
+  .photo-drop {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .photo-drop:hover, .photo-drop.drag-over {
+    border-color: var(--accent);
+    background: rgba(255,92,0,0.05);
+  }
+  .photo-drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .photo-drop .icon { font-size: 32px; margin-bottom: 8px; }
+  .photo-drop p { font-size: 14px; color: var(--muted); }
+  .photo-drop .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  .photo-preview {
+    width: 100%;
+    border-radius: 10px;
+    max-height: 200px;
+    object-fit: cover;
+    display: none;
+    margin-top: 12px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    padding: 16px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.15s;
+  }
+  .submit-btn:hover { background: #ff7a2a; transform: translateY(-1px); }
+  .submit-btn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; transform: none; }
+
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--success);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: transform 0.3s;
+    z-index: 999;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { background: #ef4444; }
+
+  /* 대시보드 */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--accent); letter-spacing: 1px; }
+  .stat-unit { font-size: 14px; color: var(--muted); margin-left: 4px; }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+    color: var(--muted);
+  }
+
+  /* 참가자 카드 */
+  .runners-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .runner-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.15s;
+  }
+  .runner-card:hover { border-color: var(--border); }
+  .runner-card.done { border-color: rgba(34,197,94,0.3); }
+
+  .runner-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .runner-name { font-size: 16px; font-weight: 700; }
+  .runner-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    background: var(--surface2);
+    color: var(--muted);
+  }
+  .runner-badge.done { background: rgba(34,197,94,0.15); color: var(--success); }
+  .runner-badge.close { background: rgba(255,184,0,0.15); color: var(--accent2); }
+
+  .progress-bar {
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 100px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 100px;
+    background: var(--accent);
+    transition: width 0.6s ease;
+  }
+  .progress-fill.done { background: var(--success); }
+  .progress-fill.close { background: var(--accent2); }
+
+  .runner-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .runner-km { color: var(--text); font-weight: 700; }
+
+  /* 인증 로그 */
+  .log-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .log-row {
+    display: grid;
+    grid-template-columns: 40px 1fr 80px 80px 120px 60px;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    font-size: 14px;
+    transition: background 0.1s;
+  }
+  .log-row:last-child { border-bottom: none; }
+  .log-row:hover { background: var(--surface2); }
+  .log-row.header {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: var(--surface2);
+  }
+  .log-row.header:hover { background: var(--surface2); }
+
+  .rank { font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--muted); }
+  .log-photo-thumb {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    object-fit: cover;
+    cursor: pointer;
+  }
+  .log-date { color: var(--muted); }
+  .view-photo {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .view-photo:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* 사진 모달 */
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal.show { display: flex; }
+  .modal img { max-width: 90vw; max-height: 90vh; border-radius: 12px; }
+  .modal-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 60px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 600px) {
+    header { padding: 16px; }
+    main { padding: 24px 16px; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .form-card { padding: 24px; }
+    .log-row { grid-template-columns: 1fr 80px 80px; }
+    .log-row .rank, .log-row .log-date, .log-row .view-photo { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">냉삼런<span> 챌린지</span></div>
+  <nav>
+    <button class="active" onclick="switchTab('cert')">인증하기</button>
+    <button onclick="switchTab('dash')">대시보드</button>
+    <button onclick="switchTab('log')">인증로그</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- 인증하기 탭 -->
+  <div class="panel active" id="panel-cert">
+    <div class="form-card">
+      <div class="form-title">달리기 인증 🏃</div>
+      <div class="form-sub">이름과 거리를 입력하고 워치/앱 화면을 사진으로 올려주세요</div>
+
+      <div class="field">
+        <label>이름</label>
+        <select id="name">
+          <option value="">선택해주세요</option>
+          <option>이혜경</option>
+          <option>김홍태</option>
+          <option>이주형</option>
+          <option>허영욱</option>
+          <option>인혜란</option>
+          <option>오상직</option>
+          <option>지용진</option>
+          <option>이현수</option>
+          <option>박태현</option>
+          <option>홍지원</option>
+          <option>권채은</option>
+          <option>안예지</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>거리 (km)</label>
+        <input type="number" id="distance" placeholder="예: 5.2" step="0.01" min="0.1" max="100">
+      </div>
+
+      <div class="field">
+        <label>인증 사진</label>
+        <div class="photo-drop" id="photoDrop">
+          <input type="file" id="photoFile" accept="image/*">
+          <div class="icon">📸</div>
+          <p>클릭하거나 사진을 여기에 끌어다 놓으세요</p>
+          <p class="hint">워치 / 핸드폰 러닝앱 화면 (사기 불가 😤)</p>
+        </div>
+        <img class="photo-preview" id="photoPreview">
+      </div>
+
+      <button class="submit-btn" id="submitBtn" onclick="submitRun()">인증 제출</button>
+    </div>
+  </div>
+
+  <!-- 대시보드 탭 -->
+  <div class="panel" id="panel-dash">
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card">
+        <div class="stat-label">총 달린 거리</div>
+        <div class="stat-value" id="totalKm">-<span class="stat-unit">km</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">달성 인원</div>
+        <div class="stat-value" id="doneCount">-<span class="stat-unit">명</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">총 인증 횟수</div>
+        <div class="stat-value" id="totalRuns">-<span class="stat-unit">회</span></div>
+      </div>
+    </div>
+
+    <div class="section-title">참가자 현황</div>
+    <div class="runners-grid" id="runnersGrid">
+      <div class="loading"><span class="spinner"></span>불러오는 중...</div>
+    </div>
+  </div>
+
+  <!-- 인증 로그 탭 -->
+  <div class="panel" id="panel-log">
+    <div class="section-title">전체 인증 기록</div>
+    <div class="log-table">
+      <div class="log-row header">
+        <div>#</div>
+        <div>이름</div>
+        <div>거리</div>
+        <div>회차</div>
+        <div>날짜</div>
+        <div>사진</div>
+      </div>
+      <div id="logBody">
+        <div class="loading"><span class="spinner"></span>불러오는 중...</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- 사진 모달 -->
+<div class="modal" id="photoModal" onclick="closeModal()">
+  <button class="modal-close">✕</button>
+  <img id="modalImg" src="" alt="인증 사진">
+</div>
+
+<!-- 토스트 -->
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://arihsbwunsmxwsutdmip.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFyaWhzYnd1bnNteHdzdXRkbWlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwNDI1NzIsImV4cCI6MjA5MzYxODU3Mn0.WAP57fA9_V1YDjtPv-BmIkWHYHpss1OjRX38kORP2lI';
+
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const GOALS = {
+  '이혜경': 25, '김홍태': 35, '이주형': 35, '허영욱': 35,
+  '인혜란': 35, '오상직': 35, '지용진': 35, '이현수': 25,
+  '박태현': 35, '홍지원': 25, '권채은': 25, '안예지': 25
+};
+
+// 탭 전환
+function switchTab(tab) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  event.target.classList.add('active');
+  if (tab === 'dash') loadDashboard();
+  if (tab === 'log') loadLog();
+}
+
+// 사진 미리보기
+const photoFile = document.getElementById('photoFile');
+const photoPreview = document.getElementById('photoPreview');
+const photoDrop = document.getElementById('photoDrop');
+
+photoFile.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (file) showPreview(file);
+});
+
+photoDrop.addEventListener('dragover', e => { e.preventDefault(); photoDrop.classList.add('drag-over'); });
+photoDrop.addEventListener('dragleave', () => photoDrop.classList.remove('drag-over'));
+photoDrop.addEventListener('drop', e => {
+  e.preventDefault();
+  photoDrop.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) { photoFile.files = e.dataTransfer.files; showPreview(file); }
+});
+
+function showPreview(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    photoPreview.src = e.target.result;
+    photoPreview.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+// 인증 제출
+async function submitRun() {
+  const name = document.getElementById('name').value;
+  const distance = parseFloat(document.getElementById('distance').value);
+  const file = photoFile.files[0];
+
+  if (!name) return showToast('이름을 선택해주세요', true);
+  if (!distance || distance <= 0) return showToast('거리를 입력해주세요', true);
+  if (!file) return showToast('인증 사진을 올려주세요', true);
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '제출 중...';
+
+  try {
+    // 사진 업로드
+    const ext = file.name.split('.').pop();
+    const fileName = `${name}_${Date.now()}.${ext}`;
+    const { error: uploadError } = await sb.storage.from('photos').upload(fileName, file);
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = sb.storage.from('photos').getPublicUrl(fileName);
+
+    // DB 저장
+    const { error: dbError } = await sb.from('runs').insert({
+      name, distance, photo_url: publicUrl
+    });
+    if (dbError) throw dbError;
+
+    showToast('인증 완료! 🎉');
+    document.getElementById('name').value = '';
+    document.getElementById('distance').value = '';
+    photoFile.value = '';
+    photoPreview.style.display = 'none';
+  } catch (err) {
+    showToast('오류가 발생했어요: ' + err.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '인증 제출';
+  }
+}
+
+// 대시보드 로드
+async function loadDashboard() {
+  const { data, error } = await sb.from('runs').select('*').order('submitted_at', { ascending: true });
+  if (error) return;
+
+  // 사람별 집계
+  const byName = {};
+  for (const r of data) {
+    if (!byName[r.name]) byName[r.name] = { total: 0, runs: 0 };
+    byName[r.name].total += r.distance;
+    byName[r.name].runs += 1;
+  }
+
+  // 전체 통계
+  const totalKm = data.reduce((s, r) => s + r.distance, 0);
+  const doneCount = Object.entries(byName).filter(([n, v]) => v.total >= (GOALS[n] || 35)).length;
+  document.getElementById('totalKm').innerHTML = totalKm.toFixed(1) + '<span class="stat-unit">km</span>';
+  document.getElementById('doneCount').innerHTML = doneCount + '<span class="stat-unit">명</span>';
+  document.getElementById('totalRuns').innerHTML = data.length + '<span class="stat-unit">회</span>';
+
+  // 참가자 카드
+  const grid = document.getElementById('runnersGrid');
+  grid.innerHTML = '';
+
+  const sorted = Object.keys(GOALS).sort((a, b) => {
+    const pa = (byName[a]?.total || 0) / GOALS[a];
+    const pb = (byName[b]?.total || 0) / GOALS[b];
+    return pb - pa;
+  });
+
+  for (const name of sorted) {
+    const goal = GOALS[name];
+    const total = byName[name]?.total || 0;
+    const runs = byName[name]?.runs || 0;
+    const pct = Math.min(total / goal * 100, 100);
+    const done = total >= goal;
+    const close = !done && pct >= 80;
+
+    grid.innerHTML += `
+      <div class="runner-card ${done ? 'done' : ''}">
+        <div class="runner-header">
+          <div class="runner-name">${name}</div>
+          <div class="runner-badge ${done ? 'done' : close ? 'close' : ''}">
+            ${done ? '✅ 달성' : close ? '🔥 임박' : `목표 ${goal}km`}
+          </div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill ${done ? 'done' : close ? 'close' : ''}" style="width:${pct}%"></div>
+        </div>
+        <div class="runner-stats">
+          <span><span class="runner-km">${total.toFixed(1)}km</span> / ${goal}km</span>
+          <span>${runs}회 인증 · ${pct.toFixed(0)}%</span>
+        </div>
+      </div>`;
+  }
+}
+
+// 인증 로그 로드
+async function loadLog() {
+  const { data, error } = await sb.from('runs').select('*').order('submitted_at', { ascending: false });
+  if (error) return;
+
+  // 회차 계산 (사람별 순서)
+  const countByName = {};
+  const reversed = [...data].reverse();
+  const runOrder = {};
+  for (const r of reversed) {
+    countByName[r.name] = (countByName[r.name] || 0) + 1;
+    runOrder[r.id] = countByName[r.name];
+  }
+
+  const body = document.getElementById('logBody');
+  if (!data.length) {
+    body.innerHTML = '<div class="loading">아직 인증 기록이 없어요</div>';
+    return;
+  }
+
+  body.innerHTML = data.map((r, i) => `
+    <div class="log-row">
+      <div class="rank">${i + 1}</div>
+      <div>${r.name}</div>
+      <div style="font-weight:700">${r.distance.toFixed(1)}km</div>
+      <div style="color:var(--muted)">${runOrder[r.id]}회차</div>
+      <div class="log-date">${new Date(r.submitted_at).toLocaleDateString('ko-KR', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
+      <div>${r.photo_url ? `<button class="view-photo" onclick="openModal('${r.photo_url}')">보기</button>` : '-'}</div>
+    </div>`).join('');
+}
+
+function openModal(url) {
+  document.getElementById('modalImg').src = url;
+  document.getElementById('photoModal').classList.add('show');
+}
+function closeModal() { document.getElementById('photoModal').classList.remove('show'); }
+
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
