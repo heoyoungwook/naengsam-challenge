@@ -678,7 +678,7 @@ async function loadDashboard() {
   const grid = document.getElementById('runnersGrid');
   grid.innerHTML = '';
 
-  const sorted = Object.keys(GOALS).sort((a, b) => a.localeCompare(b, 'ko'));
+  const sorted = ['권채은','김홍태','박태현','안예지','오상직','이주형','이현수','이혜경','인혜란','지용진','허영욱','홍지원'];
 
   for (const name of sorted) {
     const goal = GOALS[name];
