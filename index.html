@@ -251,6 +251,48 @@
     background: radial-gradient(circle, rgba(255,120,0,0.12) 0%, transparent 70%);
     pointer-events: none;
   }
+  .runner-card.elite {
+    border-color: rgba(220,20,60,0.5);
+    background: linear-gradient(135deg, #1a0005 0%, #1f0008 50%, #14000a 100%);
+    box-shadow: 0 0 0 1px rgba(220,20,60,0.25), 0 4px 24px rgba(220,20,60,0.15), inset 0 1px 0 rgba(255,60,80,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+  .runner-card.elite::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(220,20,60,0.8), rgba(255,80,100,1), rgba(220,20,60,0.8), transparent);
+  }
+  .runner-card.elite::after {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 100px; height: 100px;
+    background: radial-gradient(circle, rgba(220,20,60,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .runner-card.elite .runner-name {
+    background: linear-gradient(90deg, #ff1a3d, #ff6b6b, #ff1a3d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .runner-card.elite .runner-km {
+    color: #ff3355;
+    text-shadow: 0 0 10px rgba(220,20,60,0.6);
+  }
+  .elite-badge {
+    background: rgba(220,20,60,0.2) !important;
+    color: #ff3355 !important;
+    border: 1px solid rgba(220,20,60,0.4) !important;
+    text-shadow: 0 0 8px rgba(220,20,60,0.8) !important;
+  }
+  .progress-fill.elite {
+    background: linear-gradient(90deg, #8b0000, #dc143c, #ff4466);
+    box-shadow: 0 0 8px rgba(220,20,60,0.7), 0 0 16px rgba(220,20,60,0.3);
+  }
   .runner-card.over { border-color: rgba(255,184,0,0.5); background: linear-gradient(135deg, var(--surface) 0%, rgba(255,184,0,0.07) 100%); }
   .runner-badge.over { background: rgba(255,184,0,0.15); color: var(--accent2); }
   .progress-fill.over { background: linear-gradient(90deg, #ffb800, #ffe066); box-shadow: 0 0 8px rgba(255,184,0,0.5); }
@@ -589,7 +631,7 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const GOALS = {
   '이혜경': 25, '김홍태': 25, '이주형': 25, '허영욱': 35,
-  '인혜란': 35, '오상직': 35, '지용진': 35, '이현수': 25,
+  '인혜란': 35, '오상직': 35, '지용진': 35, '이현수': 40,
   '홍지원': 25, '권채은': 20, '안예지': 20
 };
 
@@ -724,20 +766,21 @@ async function loadDashboard() {
     const over = total > goal;
     const close = !done && pct >= 80;
     const isHard = goal >= 35;
+    const isElite = goal >= 40;
 
     grid.innerHTML += `
-      <div class="runner-card ${over ? 'over' : done ? 'done' : ''} ${isHard && !done ? 'hard' : ''}">
+      <div class="runner-card ${over ? 'over' : done ? 'done' : ''} ${isElite && !done ? 'elite' : isHard && !done ? 'hard' : ''}">
         <div class="runner-header">
           <div style="display:flex;align-items:center;gap:8px;">
             <div class="runner-name">${name}</div>
-            ${isHard ? '<span class="hard-badge">35km</span>' : ''}
+            ${isElite ? '<span class="hard-badge elite-badge">40km</span>' : isHard ? '<span class="hard-badge">35km</span>' : ''}
           </div>
           <div class="runner-badge ${over ? 'over' : done ? 'done' : close ? 'close' : ''}">
             ${over ? '🏆 초과달성' : done ? '✅ 달성' : close ? '🔥 임박' : '목표 ' + goal + 'km'}
           </div>
         </div>
         <div class="progress-bar" style="${isHard && !done ? 'height:8px;' : ''}">
-          <div class="progress-fill ${over ? 'over' : done ? 'done' : close ? 'close' : isHard ? 'hard' : ''}" style="width:${pct}%"></div>
+          <div class="progress-fill ${over ? 'over' : done ? 'done' : close ? 'close' : isElite ? 'elite' : isHard ? 'hard' : ''}" style="width:${pct}%"></div>
         </div>
         <div class="runner-stats">
           <span><span class="runner-km">${total.toFixed(1)}km</span> / ${goal}km</span>
