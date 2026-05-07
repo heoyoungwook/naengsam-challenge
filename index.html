@@ -251,47 +251,66 @@
     background: radial-gradient(circle, rgba(255,120,0,0.12) 0%, transparent 70%);
     pointer-events: none;
   }
+  @keyframes elite-shine {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @keyframes elite-pulse {
+    0%, 100% { box-shadow: 0 0 0 1px rgba(255,30,60,0.4), 0 4px 24px rgba(255,30,60,0.2), inset 0 1px 0 rgba(255,80,100,0.3); }
+    50% { box-shadow: 0 0 0 1px rgba(255,30,60,0.7), 0 4px 32px rgba(255,30,60,0.4), inset 0 1px 0 rgba(255,80,100,0.5); }
+  }
   .runner-card.elite {
-    border-color: rgba(220,20,60,0.5);
-    background: linear-gradient(135deg, #1a0005 0%, #1f0008 50%, #14000a 100%);
-    box-shadow: 0 0 0 1px rgba(220,20,60,0.25), 0 4px 24px rgba(220,20,60,0.15), inset 0 1px 0 rgba(255,60,80,0.2);
+    border-color: rgba(255,30,60,0.6);
+    background: linear-gradient(135deg, #200008 0%, #250010 50%, #18000a 100%);
+    animation: elite-pulse 2s ease-in-out infinite;
     position: relative;
     overflow: hidden;
   }
   .runner-card.elite::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0;
+    top: 0; left: -100%; right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(220,20,60,0.8), rgba(255,80,100,1), rgba(220,20,60,0.8), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,60,90,0.6), rgba(255,120,140,1), rgba(255,255,255,0.9), rgba(255,120,140,1), rgba(255,60,90,0.6), transparent);
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 200%; }
   }
   .runner-card.elite::after {
     content: '';
     position: absolute;
-    top: -40px; right: -40px;
-    width: 100px; height: 100px;
-    background: radial-gradient(circle, rgba(220,20,60,0.15) 0%, transparent 70%);
+    top: -50px; right: -50px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(255,30,60,0.2) 0%, transparent 70%);
     pointer-events: none;
   }
   .runner-card.elite .runner-name {
-    background: linear-gradient(90deg, #ff1a3d, #ff6b6b, #ff1a3d);
+    background: linear-gradient(90deg, #ff1a3d, #ff8fa3, #fff, #ff8fa3, #ff1a3d);
+    background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    animation: elite-shine 3s linear infinite;
   }
   .runner-card.elite .runner-km {
-    color: #ff3355;
-    text-shadow: 0 0 10px rgba(220,20,60,0.6);
+    color: #ff4466;
+    text-shadow: 0 0 12px rgba(255,30,60,0.8), 0 0 24px rgba(255,30,60,0.4);
   }
   .elite-badge {
-    background: rgba(220,20,60,0.2) !important;
-    color: #ff3355 !important;
-    border: 1px solid rgba(220,20,60,0.4) !important;
-    text-shadow: 0 0 8px rgba(220,20,60,0.8) !important;
+    background: rgba(255,30,60,0.2) !important;
+    color: #ff4466 !important;
+    border: 1px solid rgba(255,30,60,0.5) !important;
+    text-shadow: 0 0 8px rgba(255,30,60,1) !important;
+    box-shadow: 0 0 8px rgba(255,30,60,0.3) !important;
   }
   .progress-fill.elite {
-    background: linear-gradient(90deg, #8b0000, #dc143c, #ff4466);
-    box-shadow: 0 0 8px rgba(220,20,60,0.7), 0 0 16px rgba(220,20,60,0.3);
+    background: linear-gradient(90deg, #cc0020, #ff1a3d, #ff6680, #ff1a3d);
+    background-size: 200% auto;
+    animation: elite-shine 2s linear infinite;
+    box-shadow: 0 0 10px rgba(255,30,60,0.8), 0 0 20px rgba(255,30,60,0.4);
   }
   .runner-card.over { border-color: rgba(255,184,0,0.5); background: linear-gradient(135deg, var(--surface) 0%, rgba(255,184,0,0.07) 100%); }
   .runner-badge.over { background: rgba(255,184,0,0.15); color: var(--accent2); }
@@ -631,7 +650,7 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const GOALS = {
   '이혜경': 25, '김홍태': 25, '이주형': 25, '허영욱': 35,
-  '인혜란': 35, '오상직': 35, '지용진': 35, '이현수': 40,
+  '인혜란': 35, '오상직': 40, '지용진': 35, '이현수': 40,
   '홍지원': 25, '권채은': 20, '안예지': 20
 };
 
