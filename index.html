@@ -222,23 +222,24 @@
 
   .runner-card {
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: 1px solid rgba(160,165,180,0.2);
     border-radius: 12px;
     padding: 20px;
     transition: border-color 0.2s, box-shadow 0.2s;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(120,130,150,0.08), inset 0 1px 0 rgba(200,210,230,0.05);
   }
   .runner-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+    background: linear-gradient(90deg, transparent, rgba(180,190,210,0.18), transparent);
   }
   .runner-card:hover {
-    border-color: rgba(255,255,255,0.12);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    border-color: rgba(160,170,190,0.35);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3), 0 0 0 1px rgba(160,170,190,0.15);
   }
   .runner-card:hover { border-color: var(--border); }
   .runner-card.done { border-color: rgba(34,197,94,0.3); }
