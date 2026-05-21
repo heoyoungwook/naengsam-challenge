@@ -705,6 +705,7 @@
           <option>권채은</option>
           <option>김홍태</option>
           <option>안예지</option>
+          <option>박태현</option>
           <option>오상직</option>
           <option>이주형</option>
           <option>이현수</option>
@@ -770,6 +771,7 @@
         <button class="filter-btn" onclick="filterLog('권채은', this)">권채은</button>
         <button class="filter-btn" onclick="filterLog('김홍태', this)">김홍태</button>
         <button class="filter-btn" onclick="filterLog('안예지', this)">안예지</button>
+        <button class="filter-btn" onclick="filterLog('박태현', this)">박태현</button>
         <button class="filter-btn" onclick="filterLog('오상직', this)">오상직</button>
         <button class="filter-btn" onclick="filterLog('이주형', this)">이주형</button>
         <button class="filter-btn" onclick="filterLog('이현수', this)">이현수</button>
@@ -814,7 +816,7 @@ const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const GOALS = {
-  '이혜경': 25, '김홍태': 25, '이주형': 25, '허영욱': 35,
+  '이혜경': 25, '김홍태': 25, '이주형': 25, '허영욱': 35, '박태현': 25,
   '인혜란': 35, '오상직': 40, '지용진': 35, '이현수': 40,
   '홍지원': 25, '권채은': 20, '안예지': 20
 };
@@ -938,7 +940,7 @@ async function loadDashboard() {
   const grid = document.getElementById('runnersGrid');
   grid.innerHTML = '';
 
-  const sorted = ['권채은','김홍태','안예지','오상직','이주형','이현수','이혜경','인혜란','지용진','허영욱','홍지원'];
+  const sorted = ['권채은','김홍태','박태현','안예지','오상직','이주형','이현수','이혜경','인혜란','지용진','허영욱','홍지원'];
 
   for (const name of sorted) {
     const goal = GOALS[name];
