@@ -725,7 +725,7 @@
       <div class="field">
         <label>인증 사진</label>
         <div class="photo-drop" id="photoDrop">
-          <input type="file" id="photoFile" accept="image/*">
+          <input type="file" id="photoFile" accept="image/*" onchange="checkSingleFile(this)">
           <div class="icon">📸</div>
           <p>클릭하거나 사진을 여기에 끌어다 놓으세요</p>
           <p class="hint">워치 / 핸드폰 러닝앱 화면 (사기 불가 😤)</p>
@@ -837,6 +837,7 @@ const photoPreview = document.getElementById('photoPreview');
 const photoDrop = document.getElementById('photoDrop');
 
 photoFile.addEventListener('change', e => {
+  if (e.target.files.length > 1) return;
   const file = e.target.files[0];
   if (file) showPreview(file);
 });
@@ -857,6 +858,18 @@ function showPreview(file) {
     photoPreview.style.display = 'block';
   };
   reader.readAsDataURL(file);
+}
+
+// 파일 1장 제한
+function checkSingleFile(input) {
+  if (input.files.length > 1) {
+    showToast('사진은 1장만 올려주세요!', true);
+    input.value = '';
+    photoPreview.style.display = 'none';
+    return;
+  }
+  const file = input.files[0];
+  if (file) showPreview(file);
 }
 
 // 인증 제출
@@ -950,7 +963,7 @@ async function loadDashboard() {
     const pct = Math.min(rawPct, 100);
     const done = total >= goal;
     const over = total > goal;
-    const close = !done && pct >= 80;
+    const close = !done && pct >= 80 && pct < 100;
     const isHard = goal >= 35;
     const isElite = goal >= 40;
 
