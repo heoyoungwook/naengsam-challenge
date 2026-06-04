@@ -12,10 +12,10 @@
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
   :root {
-    --bg: #050d12;
-    --surface: #091820;
-    --surface2: #0d2535;
-    --border: #1a3a50;
+    --bg: #071820;
+    --surface: #0d2535;
+    --surface2: #122f42;
+    --border: #1e4a65;
     --accent: #00b4d8;
     --accent2: #00e5b0;
     --text: #f0f0f0;
@@ -708,7 +708,7 @@
     height: 120px;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.07;
+    opacity: 0.12;
   }
   .wave-bg svg { width: 100%; height: 100%; }
   .wave1 { animation: wave 8s linear infinite; }
@@ -718,8 +718,8 @@
   .sun-flare {
     position: fixed;
     top: -60px; right: -60px;
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(0,229,176,0.25) 0%, rgba(0,180,216,0.15) 35%, rgba(0,150,200,0.06) 60%, transparent 75%);
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(255,240,100,0.15) 0%, rgba(0,229,176,0.2) 25%, rgba(0,180,216,0.12) 50%, transparent 70%);
     pointer-events: none;
     z-index: 1;
     animation: sun-pulse 4s ease-in-out infinite;
@@ -750,30 +750,21 @@
     50%  { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
   }
-  @keyframes ripple {
-    0%   { transform: scale(1);   opacity: 0.07; }
-    50%  { transform: scale(1.4); opacity: 0.03; }
-    100% { transform: scale(1);   opacity: 0.07; }
-  }
+
   .water-bg {
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 0;
-    background: radial-gradient(ellipse at 20% 80%, rgba(0,180,216,0.12) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, rgba(0,229,176,0.10) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(0,120,200,0.06) 0%, transparent 70%);
+    background: 
+      radial-gradient(ellipse at 15% 85%, rgba(0,210,255,0.18) 0%, transparent 45%),
+      radial-gradient(ellipse at 85% 15%, rgba(0,255,200,0.15) 0%, transparent 45%),
+      radial-gradient(ellipse at 50% 50%, rgba(0,180,255,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 80%, rgba(100,230,255,0.10) 0%, transparent 40%);
     background-size: 300% 300%;
-    animation: water-shift 10s ease-in-out infinite;
+    animation: water-shift 8s ease-in-out infinite;
   }
-  .ripple {
-    position: fixed;
-    border-radius: 50%;
-    border: 1px solid rgba(0,229,176,0.25);
-    pointer-events: none;
-    z-index: 0;
-    animation: ripple ease-in-out infinite;
-  }
+
 
   /* 헤더 햇빛 shimmer */
   header::after {
@@ -830,13 +821,10 @@
   </svg>
 </div>
 <div class="water-bg"></div>
-<div class="ripple" style="width:300px;height:300px;bottom:-100px;left:10%;animation-duration:6s;animation-delay:0s;"></div>
-<div class="ripple" style="width:200px;height:200px;bottom:-60px;left:40%;animation-duration:8s;animation-delay:2s;"></div>
-<div class="ripple" style="width:400px;height:400px;bottom:-150px;right:5%;animation-duration:7s;animation-delay:1s;"></div>
-<div class="ripple" style="width:150px;height:150px;top:30%;right:15%;animation-duration:9s;animation-delay:3s;"></div>
+
 
 <header>
-  <div class="logo">냉삼런<span> 챌린지 6월</span></div>
+  <div class="logo">🌊 냉삼런<span> 챌린지 6월</span></div>
   <nav>
     <button class="active" onclick="switchTab('cert')">인증하기</button>
     <button onclick="switchTab('dash')">대시보드</button>
