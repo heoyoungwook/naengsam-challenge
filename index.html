@@ -8,8 +8,8 @@
 // 물방울 버블 생성
 (function() {
   const container = document.getElementById('bubbles');
-  const sizes = [6,8,10,12,16,20];
-  for (let i = 0; i < 12; i++) {
+  const sizes = [8,12,16,20,26,32];
+  for (let i = 0; i < 20; i++) {
     const b = document.createElement('div');
     b.className = 'bubble';
     const size = sizes[Math.floor(Math.random() * sizes.length)];
@@ -17,8 +17,8 @@
       width: ${size}px;
       height: ${size}px;
       left: ${Math.random() * 100}%;
-      animation-duration: ${8 + Math.random() * 12}s;
-      animation-delay: ${Math.random() * 10}s;
+      animation-duration: ${6 + Math.random() * 10}s;
+      animation-delay: -${Math.random() * 10}s;
     `;
     container.appendChild(b);
   }
@@ -368,17 +368,17 @@
     100% { background-position: 0% 50%; }
   }
   @keyframes elite-pulse {
-    0%, 100% { box-shadow: 0 0 0 1px rgba(255,30,60,0.4), 0 4px 24px rgba(255,30,60,0.2), inset 0 1px 0 rgba(255,80,100,0.3); }
-    50% { box-shadow: 0 0 0 1px rgba(255,30,60,0.7), 0 4px 32px rgba(255,30,60,0.4), inset 0 1px 0 rgba(255,80,100,0.5); }
+    0%, 100% { box-shadow: 0 0 0 1px rgba(0,120,255,0.4), 0 4px 24px rgba(0,120,255,0.2), inset 0 1px 0 rgba(0,180,255,0.3); }
+    50% { box-shadow: 0 0 0 1px rgba(0,150,255,0.7), 0 4px 32px rgba(0,150,255,0.4), inset 0 1px 0 rgba(0,200,255,0.5); }
   }
   .runner-card.elite:hover {
-    border-color: rgba(255,60,90,0.9);
-    box-shadow: 0 0 0 1px rgba(255,30,60,0.5), 0 4px 32px rgba(255,30,60,0.3), inset 0 1px 0 rgba(255,100,120,0.35);
-    background: #280008;
+    border-color: rgba(0,180,255,0.9);
+    box-shadow: 0 0 0 1px rgba(0,150,255,0.5), 0 4px 32px rgba(0,150,255,0.3), inset 0 1px 0 rgba(0,200,255,0.35);
+    background: #001535;
   }
   .runner-card.elite {
-    border-color: rgba(255,30,60,0.6);
-    background: linear-gradient(135deg, #200008 0%, #250010 50%, #18000a 100%);
+    border-color: rgba(0,120,255,0.6);
+    background: linear-gradient(135deg, #000d2a 0%, #001035 50%, #00091f 100%);
     animation: elite-pulse 2s ease-in-out infinite;
     position: relative;
     overflow: hidden;
@@ -388,7 +388,7 @@
     position: absolute;
     top: 0; left: -100%; right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,60,90,0.6), rgba(255,120,140,1), rgba(255,255,255,0.9), rgba(255,120,140,1), rgba(255,60,90,0.6), transparent);
+    background: linear-gradient(90deg, transparent, rgba(0,120,255,0.6), rgba(0,200,255,1), rgba(255,255,255,0.9), rgba(0,200,255,1), rgba(0,120,255,0.6), transparent);
     animation: shimmer 3s ease-in-out infinite;
   }
   @keyframes shimmer {
@@ -400,11 +400,11 @@
     position: absolute;
     top: -50px; right: -50px;
     width: 120px; height: 120px;
-    background: radial-gradient(circle, rgba(255,30,60,0.2) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(0,150,255,0.2) 0%, transparent 70%);
     pointer-events: none;
   }
   .runner-card.elite .runner-name {
-    background: linear-gradient(90deg, #ff1a3d, #ff8fa3, #fff, #ff8fa3, #ff1a3d);
+    background: linear-gradient(90deg, #0090ff, #00d4ff, #fff, #00d4ff, #0090ff);
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -412,21 +412,21 @@
     animation: elite-shine 3s linear infinite;
   }
   .runner-card.elite .runner-km {
-    color: #ff4466;
-    text-shadow: 0 0 12px rgba(255,30,60,0.8), 0 0 24px rgba(255,30,60,0.4);
+    color: #00d4ff;
+    text-shadow: 0 0 12px rgba(0,150,255,0.8), 0 0 24px rgba(0,150,255,0.4);
   }
   .elite-badge {
-    background: rgba(255,30,60,0.2) !important;
-    color: #ff4466 !important;
-    border: 1px solid rgba(255,30,60,0.5) !important;
-    text-shadow: 0 0 8px rgba(255,30,60,1) !important;
-    box-shadow: 0 0 8px rgba(255,30,60,0.3) !important;
+    background: rgba(0,120,255,0.2) !important;
+    color: #00d4ff !important;
+    border: 1px solid rgba(0,150,255,0.5) !important;
+    text-shadow: 0 0 8px rgba(0,180,255,1) !important;
+    box-shadow: 0 0 8px rgba(0,150,255,0.3) !important;
   }
   .progress-fill.elite {
-    background: linear-gradient(90deg, #cc0020, #ff1a3d, #ff6680, #ff1a3d);
+    background: linear-gradient(90deg, #0060cc, #0090ff, #00d4ff, #0090ff);
     background-size: 200% auto;
     animation: elite-shine 2s linear infinite;
-    box-shadow: 0 0 10px rgba(255,30,60,0.8), 0 0 20px rgba(255,30,60,0.4);
+    box-shadow: 0 0 10px rgba(0,150,255,0.8), 0 0 20px rgba(0,150,255,0.4);
   }
   .runner-card.over {
     border: 1px solid rgba(80,220,80,0.7);
@@ -739,21 +739,31 @@
   /* 햇빛 렌즈플레어 */
   .sun-flare {
     position: fixed;
-    top: -80px; right: -80px;
-    width: 300px; height: 300px;
-    background: radial-gradient(circle, rgba(0,229,176,0.12) 0%, rgba(0,180,216,0.06) 40%, transparent 70%);
+    top: -60px; right: -60px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(0,229,176,0.25) 0%, rgba(0,180,216,0.15) 35%, rgba(0,150,200,0.06) 60%, transparent 75%);
     pointer-events: none;
-    z-index: 0;
+    z-index: 1;
     animation: sun-pulse 4s ease-in-out infinite;
+  }
+  .sun-flare::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 800px; height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(0,229,176,0.3), rgba(255,255,255,0.4), rgba(0,229,176,0.3), transparent);
+    transform: translate(-50%, -50%) rotate(-35deg);
+    animation: lens-flare 4s ease-in-out infinite;
   }
   .sun-flare::after {
     content: '';
     position: absolute;
     top: 50%; left: 50%;
-    width: 600px; height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(0,229,176,0.15), transparent);
-    transform: translate(-50%, -50%) rotate(-30deg);
+    width: 500px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,180,216,0.4), transparent);
+    transform: translate(-50%, -50%) rotate(-15deg);
     animation: lens-flare 4s ease-in-out infinite;
+    animation-delay: 0.5s;
   }
 
   /* 물방울 버블 */
@@ -768,8 +778,9 @@
     position: absolute;
     bottom: -50px;
     border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, rgba(0,229,176,0.3), rgba(0,180,216,0.1));
-    border: 1px solid rgba(0,229,176,0.2);
+    background: radial-gradient(circle at 30% 30%, rgba(0,229,176,0.25), rgba(0,180,216,0.08));
+    border: 1px solid rgba(0,229,176,0.35);
+    box-shadow: inset 0 0 6px rgba(255,255,255,0.15), 0 0 8px rgba(0,229,176,0.15);
     animation: float-bubble linear infinite;
   }
 
@@ -785,15 +796,23 @@
   }
 
   /* 카드 수면 반짝임 */
+  .stat-card { position: relative; overflow: hidden; }
   .stat-card::before {
     content: '';
     position: absolute;
-    top: 0; left: -100%; right: 0;
+    top: 0; left: 0; right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0,229,176,0.4), transparent);
-    animation: shimmer-h 4s linear infinite;
+    background: linear-gradient(90deg, transparent, rgba(0,229,176,0.7), rgba(255,255,255,0.5), rgba(0,229,176,0.7), transparent);
+    background-size: 200% auto;
+    animation: shimmer-h 3s linear infinite;
   }
-  .stat-card { position: relative; overflow: hidden; }
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,229,176,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
 
   main { position: relative; z-index: 1; }
 </style>
@@ -1189,8 +1208,8 @@ function showToast(msg, isError = false) {
 // 물방울 버블 생성
 (function() {
   const container = document.getElementById('bubbles');
-  const sizes = [6,8,10,12,16,20];
-  for (let i = 0; i < 12; i++) {
+  const sizes = [8,12,16,20,26,32];
+  for (let i = 0; i < 20; i++) {
     const b = document.createElement('div');
     b.className = 'bubble';
     const size = sizes[Math.floor(Math.random() * sizes.length)];
@@ -1198,8 +1217,8 @@ function showToast(msg, isError = false) {
       width: ${size}px;
       height: ${size}px;
       left: ${Math.random() * 100}%;
-      animation-duration: ${8 + Math.random() * 12}s;
-      animation-delay: ${Math.random() * 10}s;
+      animation-duration: ${6 + Math.random() * 10}s;
+      animation-delay: -${Math.random() * 10}s;
     `;
     container.appendChild(b);
   }
