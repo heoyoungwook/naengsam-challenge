@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🏃 냉삼런 챌린지</title>
+<title>🏃 냉삼런 챌린지 6월</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
   :root {
-    --bg: #0a0a0a;
-    --surface: #141414;
-    --surface2: #1e1e1e;
-    --border: #2a2a2a;
-    --accent: #ff5c00;
-    --accent2: #ffb800;
+    --bg: #050d12;
+    --surface: #091820;
+    --surface2: #0d2535;
+    --border: #1a3a50;
+    --accent: #00b4d8;
+    --accent2: #00e5b0;
     --text: #f0f0f0;
     --muted: #666;
     --success: #22c55e;
@@ -316,14 +316,14 @@
     filter: brightness(1.15);
   }
   .runner-card.hard:hover {
-    border-color: rgba(255,120,0,0.8);
-    box-shadow: 0 0 0 1px rgba(255,100,0,0.4), 0 4px 24px rgba(255,92,0,0.25), inset 0 1px 0 rgba(255,160,0,0.25);
-    background: #221000;
+    border-color: rgba(0,210,240,0.8);
+    box-shadow: 0 0 0 1px rgba(0,180,216,0.4), 0 4px 24px rgba(0,180,216,0.25), inset 0 1px 0 rgba(0,229,176,0.25);
+    background: #001a2e;
   }
   .runner-card.hard {
-    border-color: rgba(255,92,0,0.5);
-    background: linear-gradient(135deg, #1a0d00 0%, #1f1000 50%, #140a00 100%);
-    box-shadow: 0 0 0 1px rgba(255,92,0,0.2), 0 4px 24px rgba(255,92,0,0.12), inset 0 1px 0 rgba(255,140,0,0.15);
+    border-color: rgba(0,180,216,0.5);
+    background: linear-gradient(135deg, #001a2a 0%, #001f33 50%, #001420 100%);
+    box-shadow: 0 0 0 1px rgba(0,180,216,0.2), 0 4px 24px rgba(0,180,216,0.12), inset 0 1px 0 rgba(0,229,176,0.15);
     position: relative;
     overflow: hidden;
   }
@@ -332,14 +332,14 @@
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,92,0,0.8), rgba(255,180,0,1), rgba(255,92,0,0.8), transparent);
+    background: linear-gradient(90deg, transparent, rgba(0,180,216,0.8), rgba(0,229,176,1), rgba(0,180,216,0.8), transparent);
   }
   .runner-card.hard::after {
     content: '';
     position: absolute;
     top: -40px; right: -40px;
     width: 100px; height: 100px;
-    background: radial-gradient(circle, rgba(255,120,0,0.12) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(0,180,216,0.12) 0%, transparent 70%);
     pointer-events: none;
   }
   @keyframes elite-shine {
@@ -474,28 +474,28 @@
     font-weight: 700;
     padding: 2px 8px;
     border-radius: 100px;
-    background: rgba(255,92,0,0.2);
-    color: #ff8c00;
+    background: rgba(0,180,216,0.2);
+    color: #00d4f0;
     letter-spacing: 0.5px;
-    border: 1px solid rgba(255,92,0,0.4);
-    text-shadow: 0 0 8px rgba(255,92,0,0.8);
+    border: 1px solid rgba(0,180,216,0.4);
+    text-shadow: 0 0 8px rgba(0,180,216,0.8);
   }
 
   .runner-card.hard .runner-name {
-    background: linear-gradient(90deg, #ff5c00, #ffb800, #ff5c00);
+    background: linear-gradient(90deg, #00b4d8, #00e5b0, #00b4d8);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .runner-card.hard .runner-km {
-    color: #ff8c00;
-    text-shadow: 0 0 10px rgba(255,140,0,0.5);
+    color: #00d4f0;
+    text-shadow: 0 0 10px rgba(0,180,216,0.5);
   }
 
   .progress-fill.hard {
-    background: linear-gradient(90deg, #ff3d00, #ff5c00, #ffb800);
-    box-shadow: 0 0 8px rgba(255,92,0,0.6), 0 0 16px rgba(255,92,0,0.3);
+    background: linear-gradient(90deg, #0077a8, #00b4d8, #00e5b0);
+    box-shadow: 0 0 8px rgba(0,180,216,0.6), 0 0 16px rgba(0,180,216,0.3);
   }
 
   .runner-header {
@@ -533,9 +533,9 @@
   .progress-fill {
     height: 100%;
     border-radius: 100px;
-    background: linear-gradient(90deg, #cc4400, var(--accent));
+    background: linear-gradient(90deg, #007a99, var(--accent));
     transition: width 0.6s ease;
-    box-shadow: 0 0 4px rgba(255,92,0,0.3);
+    box-shadow: 0 0 4px rgba(0,180,216,0.3);
   }
   .progress-fill.done {
     background: linear-gradient(90deg, #ff5050, #ffb800, #50dc50, #00c8ff, #7850ff, #ff50c8);
@@ -682,7 +682,7 @@
 <body>
 
 <header>
-  <div class="logo">냉삼런<span> 챌린지</span></div>
+  <div class="logo">냉삼런<span> 챌린지 6월</span></div>
   <nav>
     <button class="active" onclick="switchTab('cert')">인증하기</button>
     <button onclick="switchTab('dash')">대시보드</button>
@@ -696,7 +696,7 @@
   <div class="panel active" id="panel-cert">
     <div class="form-card">
       <div class="form-title">달리기 인증 🏃</div>
-      <div class="form-sub">이름과 거리를 입력하고 워치/앱 화면을 사진으로 올려주세요</div>
+      <div class="form-sub">6월 챌린지 🌊 이름과 거리를 입력하고 워치/앱 화면을 사진으로 올려주세요</div>
 
       <div class="field">
         <label>이름</label>
@@ -891,13 +891,13 @@ async function submitRun() {
     const ext = file.name.split('.').pop();
     const safeName = Date.now() + "_" + Math.random().toString(36).substring(2, 8);
     const fileName = `run_${safeName}.${ext}`;
-    const { error: uploadError } = await sb.storage.from('photos').upload(fileName, file);
+    const { error: uploadError } = await sb.storage.from('photos_june').upload(fileName, file);
     if (uploadError) throw uploadError;
 
-    const { data: { publicUrl } } = sb.storage.from('photos').getPublicUrl(fileName);
+    const { data: { publicUrl } } = sb.storage.from('photos_june').getPublicUrl(fileName);
 
     // DB 저장
-    const { error: dbError } = await sb.from('runs').insert({
+    const { error: dbError } = await sb.from('runs_june').insert({
       name, distance, photo_url: publicUrl
     });
     if (dbError) throw dbError;
@@ -917,7 +917,7 @@ async function submitRun() {
 
 // 대시보드 로드
 async function loadDashboard() {
-  const { data, error } = await sb.from('runs').select('*').order('submitted_at', { ascending: true });
+  const { data, error } = await sb.from('runs_june').select('*').order('submitted_at', { ascending: true });
   if (error) return;
 
   // 사람별 집계
@@ -994,7 +994,7 @@ let allRunData = [];
 let runOrderMap = {};
 
 async function loadLog() {
-  const { data, error } = await sb.from('runs').select('*').order('submitted_at', { ascending: false });
+  const { data, error } = await sb.from('runs_june').select('*').order('submitted_at', { ascending: false });
   if (error) return;
 
   // 회차 계산 (사람별 순서)
