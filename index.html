@@ -5,24 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🏃 냉삼런 챌린지 6월</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-// 물방울 버블 생성
-(function() {
-  const container = document.getElementById('bubbles');
-  const sizes = [8,12,16,20,26,32];
-  for (let i = 0; i < 20; i++) {
-    const b = document.createElement('div');
-    b.className = 'bubble';
-    const size = sizes[Math.floor(Math.random() * sizes.length)];
-    b.style.cssText = `
-      width: ${size}px;
-      height: ${size}px;
-      left: ${Math.random() * 100}%;
-      animation-duration: ${6 + Math.random() * 10}s;
-      animation-delay: -${Math.random() * 10}s;
-    `;
-    container.appendChild(b);
-  }
-})();
+
 
 </script>
 <style>
@@ -707,12 +690,7 @@
     0%, 100% { opacity: 0.6; transform: scale(1); }
     50% { opacity: 1; transform: scale(1.08); }
   }
-  @keyframes float-bubble {
-    0% { transform: translateY(100vh) scale(0.8); opacity: 0; }
-    10% { opacity: 0.15; }
-    90% { opacity: 0.08; }
-    100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
-  }
+
   @keyframes lens-flare {
     0%, 100% { opacity: 0; }
     50% { opacity: 0.6; }
@@ -766,22 +744,35 @@
     animation-delay: 0.5s;
   }
 
-  /* 물방울 버블 */
-  .bubbles {
+  /* 움직이는 물결 그라데이션 배경 */
+  @keyframes water-shift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @keyframes ripple {
+    0%   { transform: scale(1);   opacity: 0.07; }
+    50%  { transform: scale(1.4); opacity: 0.03; }
+    100% { transform: scale(1);   opacity: 0.07; }
+  }
+  .water-bg {
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 0;
-    overflow: hidden;
+    background: radial-gradient(ellipse at 20% 80%, rgba(0,180,216,0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(0,229,176,0.10) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(0,120,200,0.06) 0%, transparent 70%);
+    background-size: 300% 300%;
+    animation: water-shift 10s ease-in-out infinite;
   }
-  .bubble {
-    position: absolute;
-    bottom: -50px;
+  .ripple {
+    position: fixed;
     border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, rgba(0,229,176,0.25), rgba(0,180,216,0.08));
-    border: 1px solid rgba(0,229,176,0.35);
-    box-shadow: inset 0 0 6px rgba(255,255,255,0.15), 0 0 8px rgba(0,229,176,0.15);
-    animation: float-bubble linear infinite;
+    border: 1px solid rgba(0,229,176,0.25);
+    pointer-events: none;
+    z-index: 0;
+    animation: ripple ease-in-out infinite;
   }
 
   /* 헤더 햇빛 shimmer */
@@ -838,7 +829,11 @@
     </g>
   </svg>
 </div>
-<div class="bubbles" id="bubbles"></div>
+<div class="water-bg"></div>
+<div class="ripple" style="width:300px;height:300px;bottom:-100px;left:10%;animation-duration:6s;animation-delay:0s;"></div>
+<div class="ripple" style="width:200px;height:200px;bottom:-60px;left:40%;animation-duration:8s;animation-delay:2s;"></div>
+<div class="ripple" style="width:400px;height:400px;bottom:-150px;right:5%;animation-duration:7s;animation-delay:1s;"></div>
+<div class="ripple" style="width:150px;height:150px;top:30%;right:15%;animation-duration:9s;animation-delay:3s;"></div>
 
 <header>
   <div class="logo">냉삼런<span> 챌린지 6월</span></div>
@@ -1205,24 +1200,7 @@ function showToast(msg, isError = false) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// 물방울 버블 생성
-(function() {
-  const container = document.getElementById('bubbles');
-  const sizes = [8,12,16,20,26,32];
-  for (let i = 0; i < 20; i++) {
-    const b = document.createElement('div');
-    b.className = 'bubble';
-    const size = sizes[Math.floor(Math.random() * sizes.length)];
-    b.style.cssText = `
-      width: ${size}px;
-      height: ${size}px;
-      left: ${Math.random() * 100}%;
-      animation-duration: ${6 + Math.random() * 10}s;
-      animation-delay: -${Math.random() * 10}s;
-    `;
-    container.appendChild(b);
-  }
-})();
+
 
 </script>
 </body>
