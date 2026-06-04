@@ -1288,6 +1288,15 @@ async function loadDashboard() {
 
   const sorted = ['권채은','김홍태','박태현','안예지','오상직','이주형','이현수','이혜경','인혜란','지용진','허영욱','홍지원'];
 
+  // 댓글 수 로드
+  const { data: commentCounts } = await sb.from('comments_june').select('target_name');
+  const countMap = {};
+  if (commentCounts) {
+    for (const c of commentCounts) {
+      countMap[c.target_name] = (countMap[c.target_name] || 0) + 1;
+    }
+  }
+
   for (const name of sorted) {
     const goal = GOALS[name];
     const total = byName[name]?.total || 0;
@@ -1318,7 +1327,7 @@ async function loadDashboard() {
           <span><span class="runner-km">${total.toFixed(1)}km</span> / ${goal}km</span>
           <span>${runs}회 인증 · ${rawPct.toFixed(0)}%</span>
         </div>
-        <button class="comment-btn" onclick="event.stopPropagation(); openCommentModal('${name}')">💬 응원 댓글 보기</button>
+        <button class="comment-btn" onclick="event.stopPropagation(); openCommentModal('${name}')">💬 응원 댓글 보기 ${countMap['${name}'] ? '(' + countMap['${name}'] + ')' : ''}</button>
       </div>`;
   }
 }
