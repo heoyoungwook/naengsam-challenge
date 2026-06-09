@@ -152,7 +152,7 @@ function renderRankTable() {
           ${p.name}
         </div>
         <div style="color:${p.achieved ? 'var(--accent)' : 'var(--muted)'}">
-          ${p.achieved ? '+' + p.extra.toFixed(1) + 'km' : p.pct.toFixed(0) + '%'}
+          ${p.achieved ? '+' + p.extra.toFixed(1) + 'km' : '+0.0km'}
         </div>
         <div>
           <div class="slot-bar">${Array(p.slots).fill('<div class="slot-dot" style="background:' + (p.achieved ? 'var(--accent)' : '#ef4444') + '"></div>').join('')}</div>
@@ -1852,7 +1852,7 @@ function renderRankTable() {
           ${p.name}
         </div>
         <div style="color:${p.achieved ? 'var(--accent)' : 'var(--muted)'}">
-          ${p.achieved ? '+' + p.extra.toFixed(1) + 'km' : p.pct.toFixed(0) + '%'}
+          ${p.achieved ? '+' + p.extra.toFixed(1) + 'km' : '+0.0km'}
         </div>
         <div>
           <div class="slot-bar">${Array(p.slots).fill('<div class="slot-dot" style="background:' + (p.achieved ? 'var(--accent)' : '#ef4444') + '"></div>').join('')}</div>
