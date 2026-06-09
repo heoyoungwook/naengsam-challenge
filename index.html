@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🏃 냉삼런 챌린지 6월</title>
+<title>🏃 망빙런 챌린지 6월</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
 
 
@@ -1008,7 +1008,7 @@ document.getElementById('commentModal').addEventListener('click', function(e) {
 
 
 <header>
-  <div class="logo">🌊 냉삼런<span> 챌린지 6월</span></div>
+  <div class="logo">🌊 망빙런<span> 챌린지 6월</span></div>
   <nav>
     <button class="active" onclick="switchTab('cert')">인증하기</button>
     <button onclick="switchTab('dash')">대시보드</button>
@@ -1323,7 +1323,7 @@ async function loadDashboard() {
         <div class="runner-header">
           <div style="display:flex;align-items:center;gap:8px;">
             <div class="runner-name">${name}</div>
-            ${isElite ? '<span class="hard-badge elite-badge">40km</span>' : isHard ? '<span class="hard-badge">35km</span>' : ''}
+            ${isElite ? '<span class="hard-badge elite-badge">' + goal + 'km</span>' : isHard ? '<span class="hard-badge">' + goal + 'km</span>' : ''}
           </div>
           <div class="runner-badge ${over ? 'over' : done ? 'done' : close ? 'close' : ''}">
             ${over ? '🏆 초과달성' : done ? '✅ 달성' : close ? '🔥 임박' : '목표 ' + goal + 'km'}
