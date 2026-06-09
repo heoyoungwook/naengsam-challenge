@@ -1221,7 +1221,7 @@ async function submitRun() {
   const file = photoFile.files[0];
 
   if (!name) return showToast('이름을 선택해주세요', true);
-  if (!distance || distance <= 0) return showToast('거리를 입력해주세요', true);
+  if (!distance || distance < 1) return showToast('최소 1km 이상만 인증 가능해요', true);
   if (!file) return showToast('인증 사진을 올려주세요', true);
 
   const btn = document.getElementById('submitBtn');
