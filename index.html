@@ -1315,8 +1315,8 @@ async function loadDashboard() {
     const done = total >= goal;
     const over = total > goal;
     const close = !done && pct >= 80 && pct < 100;
-    const isHard = goal >= 35;
-    const isElite = goal >= 40;
+    const isHard = goal >= 17;
+    const isElite = goal >= 20;
 
     grid.innerHTML += `
       <div class="runner-card ${over ? 'over' : done ? 'done' : ''} ${isElite && !done ? 'elite' : isHard && !done ? 'hard' : ''}" onclick="goToLog('${name}')">
