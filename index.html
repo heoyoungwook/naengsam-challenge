@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🏃 망빙런 챌린지 7월</title>
+<title>🏃 뭐먹런 챌린지 7월</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@400;500;700&display=swap');
@@ -649,6 +649,38 @@
   .comment-btn:hover { border-color: var(--accent); color: var(--accent); }
 
   .bg-image { position: fixed; inset: 0; background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0.35; pointer-events: none; z-index: 0; transition: opacity 1s ease; }
+
+  /* 1등 테두리 */
+  @keyframes top-runner-border {
+    0%   { border-color: rgba(255,215,0,0.9); box-shadow: 0 0 0 2px rgba(255,215,0,0.4), 0 0 24px rgba(255,215,0,0.4), 0 0 48px rgba(255,180,0,0.2); }
+    25%  { border-color: rgba(255,255,100,1);  box-shadow: 0 0 0 2px rgba(255,255,100,0.5), 0 0 32px rgba(255,255,100,0.5), 0 0 60px rgba(255,215,0,0.3); }
+    50%  { border-color: rgba(255,180,0,0.9);  box-shadow: 0 0 0 2px rgba(255,180,0,0.4), 0 0 24px rgba(255,180,0,0.4), 0 0 48px rgba(255,140,0,0.2); }
+    75%  { border-color: rgba(255,255,100,1);  box-shadow: 0 0 0 2px rgba(255,255,100,0.5), 0 0 32px rgba(255,255,100,0.5), 0 0 60px rgba(255,215,0,0.3); }
+    100% { border-color: rgba(255,215,0,0.9); box-shadow: 0 0 0 2px rgba(255,215,0,0.4), 0 0 24px rgba(255,215,0,0.4), 0 0 48px rgba(255,180,0,0.2); }
+  }
+  @keyframes top-runner-top {
+    0%, 100% { background: linear-gradient(90deg, transparent, rgba(255,215,0,0.9), rgba(255,255,200,1), rgba(255,215,0,0.9), transparent); }
+    50%       { background: linear-gradient(90deg, transparent, rgba(255,180,0,0.9), rgba(255,255,100,1), rgba(255,180,0,0.9), transparent); }
+  }
+  .runner-card.top-runner {
+    animation: top-runner-border 2s ease-in-out infinite !important;
+    background: linear-gradient(135deg, #1a1400 0%, #1f1900 50%, #120f00 100%) !important;
+  }
+  .runner-card.top-runner::before {
+    animation: top-runner-top 2s ease-in-out infinite !important;
+  }
+  .runner-card.top-runner .runner-name {
+    background: linear-gradient(90deg, #ffd700, #fff176, #ffd700) !important;
+    background-size: 200% auto !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    animation: holo-shine 2s linear infinite !important;
+  }
+  .top-runner-crown {
+    font-size: 14px;
+    margin-right: 2px;
+  }
 </style>
 </head>
 <body>
@@ -674,7 +706,7 @@
 <div class="water-bg"></div>
 
 <header>
-  <div class="logo">🌊 망빙런<span> 챌린지 7월</span></div>
+  <div class="logo">🍖 뭐먹런<span> 챌린지 7월</span></div>
   <nav>
     <button class="active" onclick="switchTab('cert')">인증하기</button>
     <button onclick="switchTab('dash')">대시보드</button>
@@ -688,7 +720,7 @@
   <div class="panel active" id="panel-cert">
     <div class="form-card">
       <div class="form-title">달리기 인증 🏃</div>
-      <div class="form-sub">7월 챌린지 🌊 이름과 거리를 입력하고 워치/앱 화면을 사진으로 올려주세요</div>
+      <div class="form-sub">7월 챌린지 🍖 이름과 거리를 입력하고 워치/앱 화면을 사진으로 올려주세요</div>
 
       <div class="field">
         <label>이름</label>
@@ -730,6 +762,14 @@
 
   <!-- 대시보드 탭 -->
   <div class="panel" id="panel-dash">
+    <div style="background:linear-gradient(135deg,rgba(255,100,0,0.12),rgba(255,50,50,0.08));border:1px solid rgba(255,100,0,0.3);border-radius:14px;padding:18px 22px;margin-bottom:24px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,150,0,0.8),transparent);"></div>
+      <div style="font-size:15px;font-weight:700;color:#ffaa44;margin-bottom:6px;">🍖 뭐먹런 페널티 안내</div>
+      <div style="font-size:13px;color:var(--text);line-height:1.8;">
+        10km <b>달성 못하면</b> 다음 회식에서 <b style="color:#ff6b6b">특별 메뉴</b> 혼자 계산이에요!<br>
+        <span style="color:var(--muted)">비싼 특수부위, 판교소주… 뭘 시킬지는 그날 분위기에 따라 😈</span>
+      </div>
+    </div>
     <div class="stats-grid" id="statsGrid">
       <div class="stat-card">
         <div class="stat-label">총 달린 거리</div>
@@ -950,6 +990,9 @@ async function loadDashboard() {
     }
   }
 
+  // 1등 계산 (0km 제외)
+  const topRunner = Object.entries(byName).sort((a,b) => b[1].total - a[1].total)[0]?.[0] || null;
+
   for (const name of MEMBERS) {
     const total = byName[name]?.total || 0;
     const runs = byName[name]?.runs || 0;
@@ -958,11 +1001,12 @@ async function loadDashboard() {
     const done = total >= GOAL;
     const over = total > GOAL;
     const close = !done && pct >= 80 && pct < 100;
+    const isTop = total > 0 && name === topRunner;
 
     grid.innerHTML += `
-      <div class="runner-card ${over ? 'over' : done ? 'done' : ''}" onclick="goToLog('${name}')">
+      <div class="runner-card ${over ? 'over' : done ? 'done' : ''} ${isTop ? 'top-runner' : ''}" onclick="goToLog('${name}')">
         <div class="runner-header">
-          <div class="runner-name">${name}</div>
+          <div class="runner-name">${isTop ? '<span class="top-runner-crown">👑</span>' : ''}${name}</div>
           <div class="runner-badge ${over ? 'over' : done ? 'done' : close ? 'close' : ''}">
             ${over ? '🏆 초과달성' : done ? '✅ 달성' : close ? '🔥 임박' : '목표 ' + GOAL + 'km'}
           </div>
