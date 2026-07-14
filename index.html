@@ -649,6 +649,9 @@
   .comment-btn:hover { border-color: var(--accent); color: var(--accent); }
 
   .bg-image { position: fixed; inset: 0; background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0.35; pointer-events: none; z-index: 0; transition: opacity 1s ease; }
+  /* 러너 트랙 칩 */
+  .runner-dot, .runner-stem { pointer-events: none; }
+
 
   /* 1등 테두리 */
   @keyframes top-runner-border {
@@ -770,6 +773,22 @@
         <span style="color:#4a7a62;">비싼 특수부위, 판교소주… 뭘 시킬지는 그날 분위기에 따라 😈</span>
       </div>
     </div>
+
+    <!-- 러닝 트랙 -->
+    <div style="background:rgba(0,20,14,0.85);border:1px solid rgba(0,212,170,0.25);border-radius:14px;padding:20px 24px 28px;margin-bottom:24px;backdrop-filter:blur(8px);position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,170,0.8),rgba(168,255,120,0.6),rgba(0,212,170,0.8),transparent);"></div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--muted);margin-bottom:14px;">🏃 LIVE TRACK</div>
+      <div id="trackRoad" style="position:relative;height:140px;background:rgba(255,255,255,0.03);border-radius:8px;border:1px solid rgba(255,255,255,0.06);margin:0 8px;overflow:visible;">
+        <div id="trackFinish" style="position:absolute;top:-8px;bottom:-8px;width:2px;background:repeating-linear-gradient(180deg,#a8ff78 0px,#a8ff78 6px,transparent 6px,transparent 12px);z-index:2;">
+          <div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:#a8ff78;letter-spacing:1px;white-space:nowrap;">🏁 10km</div>
+        </div>
+        <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:repeating-linear-gradient(90deg,rgba(255,255,255,0.08) 0px,rgba(255,255,255,0.08) 12px,transparent 12px,transparent 24px);transform:translateY(-50%);"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:20px;padding:0 8px;font-size:10px;color:var(--muted);">
+        <span>0km</span><span>5km</span><span>10km</span><span>+초과</span>
+      </div>
+    </div>
+
     <div class="stats-grid" id="statsGrid">
       <div class="stat-card">
         <div class="stat-label">총 달린 거리</div>
@@ -1021,6 +1040,81 @@ async function loadDashboard() {
         <button class="comment-btn" onclick="event.stopPropagation(); openCommentModal('${name}')">💬 응원 댓글 보기 ${countMap[name] ? '(' + countMap[name] + ')' : ''}</button>
       </div>`;
   }
+
+  // 트랙 렌더링
+  renderTrack(byName);
+}
+
+function renderTrack(byName) {
+  const road = document.getElementById('trackRoad');
+  road.querySelectorAll('.runner-chip, .runner-dot, .runner-stem').forEach(el => el.remove());
+
+  const maxDist = Math.max(15, ...MEMBERS.map(n => byName[n]?.total || 0));
+  const finishPct = (GOAL / maxDist) * 100;
+  document.getElementById('trackFinish').style.left = finishPct + '%';
+
+  const runners = MEMBERS.map(name => {
+    const total = byName[name]?.total || 0;
+    const pct = Math.min((total / maxDist) * 100, 97);
+    const done = total >= GOAL;
+    const over = total > GOAL;
+    return { name, total, pct, done, over };
+  }).sort((a, b) => a.pct - b.pct);
+
+  runners.forEach((r, i) => {
+    const isTop = i % 2 === 0;
+
+    const dot = document.createElement('div');
+    dot.className = 'runner-dot';
+    dot.style.cssText = `
+      position:absolute;
+      left:${r.pct}%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      width:8px; height:8px;
+      border-radius:50%;
+      background:${r.over ? '#50dc50' : r.done ? '#a8ff78' : 'var(--muted)'};
+      box-shadow:${r.over ? '0 0 8px rgba(80,220,80,0.9)' : r.done ? '0 0 6px rgba(168,255,120,0.7)' : 'none'};
+      z-index:4;
+    `;
+    road.appendChild(dot);
+
+    const stem = document.createElement('div');
+    stem.className = 'runner-stem';
+    const stemH = 26;
+    stem.style.cssText = `
+      position:absolute;
+      left:${r.pct}%;
+      width:1px;
+      height:${stemH}px;
+      background:${r.over ? 'rgba(80,220,80,0.4)' : r.done ? 'rgba(168,255,120,0.3)' : 'rgba(255,255,255,0.1)'};
+      transform:translateX(-50%);
+      z-index:3;
+      ${isTop ? 'bottom:calc(50% + 4px)' : 'top:calc(50% + 4px)'};
+    `;
+    road.appendChild(stem);
+
+    const chip = document.createElement('div');
+    chip.className = 'runner-chip';
+    chip.style.cssText = `
+      position:absolute;
+      left:${r.pct}%;
+      ${isTop ? 'bottom:calc(50% + ' + (stemH + 4) + 'px)' : 'top:calc(50% + ' + (stemH + 4) + 'px)'};
+      transform:translateX(-50%);
+      background:${r.over ? 'linear-gradient(90deg,rgba(80,220,80,0.2),rgba(0,200,255,0.2))' : r.done ? 'rgba(0,212,170,0.15)' : 'var(--surface2)'};
+      border:1px solid ${r.over ? 'rgba(80,220,80,0.6)' : r.done ? 'rgba(0,212,170,0.5)' : 'var(--border)'};
+      border-radius:100px;
+      padding:3px 8px;
+      font-size:11px;
+      font-weight:700;
+      color:${r.over ? '#50dc50' : r.done ? '#a8ff78' : r.total > 0 ? 'var(--text)' : 'var(--muted)'};
+      white-space:nowrap;
+      box-shadow:0 2px 8px rgba(0,0,0,0.5);
+      z-index:5;
+    `;
+    chip.textContent = r.name + (r.total > 0 ? ' ' + r.total.toFixed(1) + 'km' : '');
+    road.appendChild(chip);
+  });
 }
 
 let allRunData = [];
